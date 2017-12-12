@@ -18,7 +18,7 @@ AMyActor::AMyActor()
     VoiceCaptureAudioComponent->bAutoActivate = true;
     VoiceCaptureAudioComponent->bAlwaysPlay = true;
     VoiceCaptureAudioComponent->PitchMultiplier = 0.0f;
-    VoiceCaptureAudioComponent->VolumeMultiplier = 5.f;
+    VoiceCaptureAudioComponent->VolumeMultiplier = 4.f;
 
 }
 
@@ -37,7 +37,7 @@ void AMyActor::BeginPlay()
     VoiceCaptureSoundWaveProcedural->Pitch = 0.85f;
     VoiceCaptureSoundWaveProcedural->Volume = 5.f;
 
-    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::PlayVoiceCapture, 0.4f, true, 0.f);
+    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::PlayVoiceCapture, 0.01f, true, 0.f);
 	
 }
 
