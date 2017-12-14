@@ -4,8 +4,11 @@
 
 #include "GameFramework/Actor.h"
 #include "Voice.h"
+#include "FileManager.h"
+#include "FileManager.h"
 #include "OnlineSubsystemUtils.h"
 #include "Sound/SoundWaveProcedural.h"
+#include "Serialization/Archive.h"
 #include "MyActor.generated.h"
 
 UCLASS()
@@ -46,11 +49,22 @@ public:
     UPROPERTY()
         TArray<uint8> VoiceCaptureBuffer;
 
+    UPROPERTY()
+        TArray<uint8> VoiceCaptureBufferTakenFromBinary;
+
     UFUNCTION()
         void    VoiceCaptureTick();
 
     UFUNCTION()
         void    PlayVoiceCapture();
 	
-	
+    FBufferArchive ToBinary;
+
+    //FMemoryReader FromBinary;
+
+    UFUNCTION()
+        void SaveMyRecordedVoice();
+
+    //UFUNCTION()
+    //    void LoadFromBinary();
 };
