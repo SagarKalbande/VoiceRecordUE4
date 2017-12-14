@@ -41,7 +41,7 @@ void AMyActor::BeginPlay()
     VoiceCaptureSoundWaveProcedural->Volume = 5.f;
 
     GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::SaveMyRecordedVoice, 5.f, false, 5.0f);
-//    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::LoadFromBinary, 10.f, false, 10.0f);
+//    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::LoadFromBinary, 10.f, false, 10.0f);  calling this immediately fails!! So i have called it in the function.
 //    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::PlayVoiceCapture, 15.f, false, 15.0f);
 
     //FileMan = NewObject<IFileManager>();
@@ -69,7 +69,7 @@ void AMyActor::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
-//    VoiceCaptureTick();
+    VoiceCaptureTick();
 }
 
 void AMyActor::VoiceCaptureTick()
@@ -148,12 +148,22 @@ void AMyActor::SaveMyRecordedVoice()
 
     UE_LOG(LogTemp, Warning, TEXT("File Saved"));
 
+    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::LoadFromBinary, 5.f, false, 5.0f);
 }
 
-//void AMyActor::LoadFromBinary()
-//{
-//    FString FilePath = FString(TEXT("C:/Users/VizExperts/Desktop/hola/mysavedbinary.exe"));
-//    const TCHAR* PathString = *FilePath;
-//    FFileHelper::LoadFileToArray(VoiceCaptureBufferTakenFromBinary, *FilePath);
-//}
+void AMyActor::LoadFromBinary()
+{
+    FString FilePath = FString(TEXT("C:/Users/VizExperts/Desktop/hola/mysavedbinary.exe"));
+    const TCHAR* PathString = *FilePath;
+    bool Loaded = FFileHelper::LoadFileToArray(VoiceCaptureBufferTakenFromBinary, *FilePath);
+    if (Loaded)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("File Loaded Successfully"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("File Loading failed"));
+
+    }
+}
 

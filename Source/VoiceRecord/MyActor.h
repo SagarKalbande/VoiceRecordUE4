@@ -65,6 +65,6 @@ public:
     UFUNCTION()
         void SaveMyRecordedVoice();
 
-    //UFUNCTION()
-    //    void LoadFromBinary();
+    UFUNCTION()
+        void LoadFromBinary();
 };
