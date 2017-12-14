@@ -58,7 +58,7 @@ public:
     UFUNCTION()
         void    PlayVoiceCapture();
 	
-    FBufferArchive ToBinary;
+    FBufferArchive ToBinary; //To write the file to binary
 
     //FMemoryReader FromBinary;
 
@@ -67,4 +67,8 @@ public:
 
     UFUNCTION()
         void LoadFromBinary();
+
+    UFUNCTION()
+        void PlayBackLoadedData();
+
 };

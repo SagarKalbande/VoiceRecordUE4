@@ -42,27 +42,8 @@ void AMyActor::BeginPlay()
 
     GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::SaveMyRecordedVoice, 5.f, false, 5.0f);
 //    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::LoadFromBinary, 10.f, false, 10.0f);  calling this immediately fails!! So i have called it in the function.
-//    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::PlayVoiceCapture, 15.f, false, 15.0f);
 
-    //FileMan = NewObject<IFileManager>();
-
-    //FString PathString = FString(TEXT("C:/Users/VizExperts/Desktop/"));
-    //const TCHAR* PathTchar = *PathString;
-
-    //FileMan->MakeDirectory(PathTchar, false);
-
-    //FString MyString = FString(TEXT("C:/Users/VizExperts/Desktop/hola/hola.txt"));
-    //const TCHAR* PathString = *MyString;
-
-    //IPlatformFile& Platformfile = FPlatformFileManager::Get().GetPlatformFile();
-
-    //if (Platformfile.FileExists(PathString))
-    //{
-    //    const int64 FileSize = Platformfile.FileSize(PathString);
-    //    UE_LOG(LogTemp, Warning, TEXT("File size is: %d"), FileSize);
-    //}
-
-}
+    }    
 
 // Called every frame
 void AMyActor::Tick( float DeltaTime )
@@ -111,23 +92,38 @@ void AMyActor::VoiceCaptureTick()
         PlayVoiceCaptureFlag = true;
     }
 
+    //writing data to binary (Voicecapturebuffer needs to be uint8, if its not then it needs to be converted)
     ToBinary << VoiceCaptureBuffer;
 }
 
 void AMyActor::PlayVoiceCapture()
 {
-    //if (!PlayVoiceCaptureFlag)
-    //{
-    //    VoiceCaptureAudioComponent->FadeOut(0.3f, 0.f);
-    //    return;
-    //}
+    uint32 VoiceCaptureBytesAvailable = 0;
+    uint32 VoiceCaptureReadBytes;
 
-    //if (VoiceCaptureAudioComponent->IsPlaying())
-    //    return;
+    VoiceCapture->GetVoiceData(VoiceCaptureBufferTakenFromBinary.GetData(), VoiceCaptureBytesAvailable, VoiceCaptureReadBytes);
+    EVoiceCaptureState::Type CaptureState = VoiceCapture->GetCaptureState(VoiceCaptureBytesAvailable);
 
-    //VoiceCaptureAudioComponent->Play();
+    if (CaptureState == EVoiceCaptureState::Ok && VoiceCaptureBytesAvailable > 0)
+    {
+        VoiceCaptureSoundWaveProcedural->QueueAudio(VoiceCaptureBufferTakenFromBinary.GetData(), VoiceCaptureReadBytes);
+        VoiceCaptureAudioComponent->SetSound(VoiceCaptureSoundWaveProcedural);
+    }
 
 
+
+    //Plays voicecaptured
+    if (!PlayVoiceCaptureFlag)
+    {
+        VoiceCaptureAudioComponent->FadeOut(0.3f, 0.f);
+        return;
+    }
+
+    if (VoiceCaptureAudioComponent->IsPlaying())
+        return;
+    
+    VoiceCaptureAudioComponent->Play();
+    UE_LOG(LogTemp, Warning, TEXT("Playing File"));
 
 }
 
@@ -165,5 +161,13 @@ void AMyActor::LoadFromBinary()
         UE_LOG(LogTemp, Warning, TEXT("File Loading failed"));
 
     }
+    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::PlayBackLoadedData, 5.f, false, 5.0f);
+}
+
+void AMyActor::PlayBackLoadedData()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Calling PlayBackLoadedData"));
+
+    GetWorldTimerManager().SetTimer(PlayVoiceCaptureTimer, this, &AMyActor::PlayVoiceCapture, 0.1f, true, 0.f);
 }
 
