@@ -55,20 +55,10 @@ public:
     UFUNCTION()
         void    VoiceCaptureTick();
 
-    UFUNCTION()
-        void    PlayVoiceCapture();
 	
     FBufferArchive ToBinary; //To write the file to binary
 
     //FMemoryReader FromBinary;
 
-    UFUNCTION()
-        void SaveMyRecordedVoice();
-
-    UFUNCTION()
-        void LoadFromBinary();
-
-    UFUNCTION()
-        void PlayBackLoadedData();
 
 };
